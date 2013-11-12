@@ -1,21 +1,23 @@
-﻿using System.Web.Http.Dependencies;
+﻿using System;
+using System.Web.Http.Dependencies;
 using Ninject;
 
 namespace CodeCamper.Web
 {
     public class NinjectDependencyResolver : NinjectDependencyScope, IDependencyResolver
     {
-        private IKernel kernel;
+        private readonly IKernel _kernel;
 
         public NinjectDependencyResolver(IKernel kernel)
             : base(kernel)
         {
-            this.kernel = kernel;
+            if (kernel == null) throw new ArgumentNullException("kernel");
+            _kernel = kernel;
         }
 
         public IDependencyScope BeginScope()
         {
-            return new NinjectDependencyScope(kernel.BeginBlock());
+            return new NinjectDependencyScope(_kernel.BeginBlock());
         }
     }
 }
